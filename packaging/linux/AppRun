@@ -1,0 +1,5 @@
+#!/bin/sh
+# Ponto de entrada do AppImage
+HERE="$(dirname "$(readlink -f "$0")")"
+export QT_QPA_PLATFORM="${QT_QPA_PLATFORM:-xcb}"     # Wayland: abre pelo XWayland (mais estável com OpenGL)
+exec "$HERE/usr/bin/gdtech-boardview/gdtech-boardview" "$@"

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=GDTech BoardView
+Comment=Visualizador de boardview
+Exec=gdtech-boardview %F
+Icon=gdtech-boardview
+Terminal=false
+Categories=Development;Electronics;
+StartupWMClass=gdtech-boardview

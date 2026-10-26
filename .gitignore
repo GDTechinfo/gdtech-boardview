@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# builds
+build/
+dist/
+builds/
+*.spec
+installer/Output/
+AppDir/
+*.AppImage
+*.zip
+
+# boardviews e esquemas (são dos fabricantes: não vão para o repositório)
+*.tvw
+*.fz
+*.bdv
+*.bvr
+*.cae
+*.cst
+*.brd
+*.bv
+*.cad
+*.asc
+*.pcb
+*.faz
+*.f2b
+*.gr
+*.pdf
+!tests/samples/**
+!docs/*.pdf
+
+# sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ajudantes locais
+PREPARAR_GITHUB.bat
+_mover para .github/
