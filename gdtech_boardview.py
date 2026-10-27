@@ -7,6 +7,24 @@ import sys
 import traceback
 
 
+def _linux_gl_setup():
+    """Linux: a janela (Qt) e o PyOpenGL precisam usar o mesmo jeito de falar com a placa de vídeo.
+    Numa sessão Wayland (padrão do Fedora, Ubuntu e outros) o PyOpenGL escolhe EGL sozinho, mas a janela abre
+    pelo XWayland com GLX: as funções de desenho apontavam para o lugar errado e o programa fechava na hora
+    (Segmentation fault). Aqui os dois ficam iguais: X11/XWayland -> GLX; Wayland nativo -> EGL."""
+    if not sys.platform.startswith("linux"):
+        return
+    qpa = os.environ.get("QT_QPA_PLATFORM", "")
+    if not qpa and os.environ.get("DISPLAY"):
+        qpa = os.environ["QT_QPA_PLATFORM"] = "xcb"           # XWayland: mais estável com OpenGL
+    if "PYOPENGL_PLATFORM" not in os.environ:
+        wayland = qpa.startswith("wayland") or (not qpa and bool(os.environ.get("WAYLAND_DISPLAY")))
+        os.environ["PYOPENGL_PLATFORM"] = "egl" if wayland else "glx"
+
+
+_linux_gl_setup()
+
+
 def _log_dir():
     base = (os.environ.get("LOCALAPPDATA") if sys.platform == "win32" else
             os.environ.get("XDG_DATA_HOME") or os.path.expanduser("~/.local/share")) or os.path.expanduser("~")

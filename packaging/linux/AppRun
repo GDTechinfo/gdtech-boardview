@@ -2,4 +2,6 @@
 # Ponto de entrada do AppImage
 HERE="$(dirname "$(readlink -f "$0")")"
 export QT_QPA_PLATFORM="${QT_QPA_PLATFORM:-xcb}"     # Wayland: abre pelo XWayland (mais estável com OpenGL)
+# o PyOpenGL tem que usar o mesmo que a janela: xcb -> GLX (senão, numa sessão Wayland, ele escolhe EGL e o programa fecha)
+case "$QT_QPA_PLATFORM" in wayland*) export PYOPENGL_PLATFORM="${PYOPENGL_PLATFORM:-egl}" ;; *) export PYOPENGL_PLATFORM="${PYOPENGL_PLATFORM:-glx}" ;; esac
 exec "$HERE/usr/bin/gdtech-boardview/gdtech-boardview" "$@"
