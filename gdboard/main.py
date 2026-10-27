@@ -28,7 +28,7 @@ from .dialogs import (ThemeEditor, KeybindingsEditor, PreferencesDialog, DEFAULT
                       user_dir)
 
 APP_NAME = "GDTech BoardView"
-APP_VERSION = "3.3.1"
+APP_VERSION = "3.3.2"
 HOME_AFTER_RESTORE = "\0inicio"
 ORG = "GDTech Informática"
 
@@ -1752,6 +1752,13 @@ def _settings_key(path):
     return hashlib.sha1(os.path.abspath(path).lower().encode("utf-8")).hexdigest()
 
 
+def _desktop_file_installed(name):
+    """Existe o atalho <name>.desktop do menu de aplicativos (Linux)?"""
+    dirs = [os.environ.get("XDG_DATA_HOME") or os.path.expanduser("~/.local/share")]
+    dirs += (os.environ.get("XDG_DATA_DIRS") or "/usr/local/share:/usr/share").split(":")
+    return any(os.path.isfile(os.path.join(d, "applications", name + ".desktop")) for d in dirs if d)
+
+
 def apply_dark(app: QApplication):
     app.setStyle("Fusion")
     pal = QPalette()
@@ -1826,7 +1833,9 @@ def main():
     app = QApplication(argv)
     app.setApplicationName(APP_NAME)
     app.setOrganizationName(ORG)
-    if sys.platform.startswith("linux"):
+    if sys.platform.startswith("linux") and _desktop_file_installed("gdtech-boardview"):
+        # só com o atalho instalado (INSTALAR_LINUX.sh): sem ele (AppImage) o KDE/portal avisa
+        # "Could not register app ID: App info not found"
         app.setDesktopFileName("gdtech-boardview")
     try:
         from .icon_data import app_icon

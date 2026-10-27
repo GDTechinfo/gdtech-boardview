@@ -17,6 +17,10 @@ def _linux_gl_setup():
     qpa = os.environ.get("QT_QPA_PLATFORM", "")
     if not qpa and os.environ.get("DISPLAY"):
         qpa = os.environ["QT_QPA_PLATFORM"] = "xcb"           # XWayland: mais estável com OpenGL
+    # aviso só informativo do Qt quando o sistema (KDE/portal) não conhece o programa (AppImage): não mostrar
+    rules = os.environ.get("QT_LOGGING_RULES", "")
+    if "qt.qpa.services" not in rules:
+        os.environ["QT_LOGGING_RULES"] = (rules + ";" if rules else "") + "qt.qpa.services.warning=false"
     if "PYOPENGL_PLATFORM" not in os.environ:
         wayland = qpa.startswith("wayland") or (not qpa and bool(os.environ.get("WAYLAND_DISPLAY")))
         os.environ["PYOPENGL_PLATFORM"] = "egl" if wayland else "glx"
